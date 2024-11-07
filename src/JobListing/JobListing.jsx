@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import './JobListing.css';
 
 const JobListing = ({ 
@@ -10,24 +11,52 @@ const JobListing = ({
   fullJobDescription, 
   responsibilities, 
   requirements, 
-  applyLink 
+  applyLink, 
+  onSave, 
+  onFavorite 
 }) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
   const [isApplied, setIsApplied] = useState(false);
 
+  // Toggle bookmark status and save to "My Jobs"
   const toggleBookmark = () => {
     setIsBookmarked(!isBookmarked);
+    if (!isBookmarked && onSave) {
+      onSave({
+        jobTitle,
+        companyName,
+        datePosted,
+        briefJobDescription,
+        fullJobDescription,
+        responsibilities,
+        requirements,
+        applyLink
+      });
+    }
   };
 
-  const handleApply = () => {
-    setIsApplied(true);
+  // Toggle favorite status and add to "My Jobs"
+  const toggleFavorite = () => {
+    setIsFavorited(!isFavorited);
+    if (!isFavorited && onFavorite) {
+      onFavorite({
+        jobTitle,
+        companyName,
+        datePosted,
+        briefJobDescription,
+        fullJobDescription,
+        responsibilities,
+        requirements,
+        applyLink
+      });
+    }
   };
 
   return (
-    <div className="job-listing">
+    <div className="job-listing container">
       <div className="job-header">
         <h2>{jobTitle}</h2>
-    
         <p>{datePosted}</p>
         <p>{briefJobDescription}</p>
       </div>
@@ -40,12 +69,18 @@ const JobListing = ({
             fontSize: '24px',
           }}
         />
-
+        <FavoriteBorderIcon 
+          onClick={toggleFavorite}
+          style={{
+            cursor: 'pointer',
+            color: isFavorited ? 'red' : 'gray',
+            fontSize: '24px',
+          }}
+        />
       </div>
 
       {isBookmarked && (
         <div className="job-modal">
-          
           <p><strong>Company:</strong> {companyName}</p>
           <p><strong>Full Description:</strong> {fullJobDescription}</p>
           <h4>Key Responsibilities:</h4>
@@ -64,13 +99,17 @@ const JobListing = ({
             {isApplied ? "Applied" : "Apply Here"}
           </a>
           {!isApplied && (
-            <button onClick={handleApply} className="apply-button">
+            <button onClick={() => setIsApplied(true)} className="apply-button">
               Apply
             </button>
           )}
         </div>
       )}
     </div>
+
+
+
+
   );
 };
 
