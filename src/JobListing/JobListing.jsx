@@ -55,6 +55,7 @@ const JobListing = ({
 
   return (
     <div className="job-listing container">
+      
       <div className="job-header">
         <h2>{jobTitle}</h2>
         <p>{datePosted}</p>
